@@ -82,7 +82,7 @@ public class YoolooServer {
 				        BufferedReader in = new BufferedReader(
 				            new InputStreamReader(client.getInputStream()));
 				    String inputLine, outputLine;
-				    KnockKnockProtocol kkp = new KnockKnockProtocol();
+				    ZuschauerProtokoll kkp = new ZuschauerProtokoll();
 				    outputLine = kkp.processInput(null);
 				    out.println(outputLine);
 			        while ((inputLine = in.readLine()) != null) {

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import common.YoolooKartenspiel.Kartenfarbe;
+import server.YoolooLoginData;
 
 public class YoolooSpieler implements Serializable {
 
@@ -30,13 +31,16 @@ public class YoolooSpieler implements Serializable {
 	public void sortierungFestlegen() {
 		YoolooKarte[] neueSortierung = new YoolooKarte[this.aktuelleSortierung.length];
 		for (int i = 0; i < neueSortierung.length; i++) {
-			int neuerIndex = (int) (Math.random() * neueSortierung.length);
-			while (neueSortierung[neuerIndex] != null) {
-				neuerIndex = (int) (Math.random() * neueSortierung.length);
-			}
-			neueSortierung[neuerIndex] = aktuelleSortierung[i];
+            int[] neuerIndex = YoolooLoginData.getCardOrder(name);
+/*
+            int neuerIndex = (int) (Math.random() * neueSortierung.length);
+            while (neueSortierung[neuerIndex] != null) {
+                neuerIndex = (int) (Math.random() * neueSortierung.length);
+            }
+            //*/
+			neueSortierung[neuerIndex[i]] = aktuelleSortierung[i];
 			if (zuschauer == true) {
-				neueSortierung[neuerIndex].setWert(0);
+				neueSortierung[neuerIndex[i]].setWert(0);
 			}
 			// System.out.println(i+ ". neuerIndex: "+neuerIndex);
 		}

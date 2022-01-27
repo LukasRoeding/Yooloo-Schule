@@ -3,7 +3,7 @@ package server;
 import java.net.*;
 import java.io.*;
  
-public class KnockKnockProtocol {
+public class ZuschauerProtokoll {
     private static final int WAITING = 0;
     private static final int SENTQUESTION = 1;
     private static final int SENTCLUE = 2;

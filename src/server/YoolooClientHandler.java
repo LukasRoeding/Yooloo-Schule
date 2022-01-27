@@ -127,7 +127,10 @@ public class YoolooClientHandler extends Thread {
 					}
 				case ServerState_DISCONNECT:
 				// todo cic
-				
+                    YoolooLoginData.resetLogStatus(); //ChangesHERE
+
+                 
+//				sendeKommando(ServerMessageType.SERVERMESSAGE_RESULT_SET, ClientState.CLIENTSTATE_DISCONNECTED,	null);
             sendeKommando(ServerMessageType.SERVERMESSAGE_CHANGE_STATE, ClientState.CLIENTSTATE_DISCONNECTED,  null);
 //					sendeKommando(ServerMessageType.SERVERMESSAGE_RESULT_SET, ClientState.CLIENTSTATE_DISCONNECTED,	null);
 					oos.writeObject(session.getErgebnis());
