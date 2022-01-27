@@ -38,6 +38,7 @@ public class YoolooClient {
 	private YoolooSpieler meinSpieler;
 	private YoolooStich[] spielVerlauf = null;
 	private boolean zuschauer = false;
+	private boolean bot = false;
 	
 	public YoolooClient() {
 		super();
@@ -161,12 +162,17 @@ public class YoolooClient {
 	        	this.zuschauer = true;
 	            break;
 	        }
+	        if (inputLine.equals("Bot")) {
+	        	this.bot = true;
+	            break;
+	        }
 	        outputLine = stdIn.readLine();
 	        if (outputLine != null) {
 	            System.out.println("Client: " + outputLine);
 	            out.println(outputLine);
 	        }
 	    }
+	    
 		ois = new ObjectInputStream(serverSocket.getInputStream());
 		oos = new ObjectOutputStream(serverSocket.getOutputStream());
 	}

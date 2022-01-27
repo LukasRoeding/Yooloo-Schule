@@ -36,18 +36,20 @@ public class YoolooClientHandler extends Thread {
 	private ObjectOutputStream oos = null;
 	private ObjectInputStream ois = null;
 	private boolean zuschauer = false;
+	private boolean bot = false;
 	private ServerState state;
 	private YoolooSession session;
 	private YoolooSpieler meinSpieler = null;
 	private int clientHandlerId;
 	private Object [] cheaterArray = new Object[0];
 
-	public YoolooClientHandler(YoolooServer yoolooServer, Socket clientSocket, boolean zuschauer) {
+	public YoolooClientHandler(YoolooServer yoolooServer, Socket clientSocket, boolean zuschauer, boolean bot) {
 		this.zuschauer = zuschauer;
 		this.myServer = yoolooServer;
 		myServer.toString();
 		this.clientSocket = clientSocket;
 		this.state = ServerState.ServerState_NULL;
+		this.bot = bot;
 	}
 
 	/**
@@ -90,7 +92,7 @@ public class YoolooClientHandler extends Thread {
 					if (antwortObject instanceof LoginMessage) {
 						LoginMessage newLogin = (LoginMessage) antwortObject;
 						// TODO GameMode des Logins wird noch nicht ausgewertet
-						meinSpieler = new YoolooSpieler(newLogin.getSpielerName(), YoolooKartenspiel.maxKartenWert, zuschauer);
+						meinSpieler = new YoolooSpieler(newLogin.getSpielerName(), YoolooKartenspiel.maxKartenWert, zuschauer, this.bot);
 						meinSpieler.setClientHandlerId(clientHandlerId);
 						registriereSpielerInSession(meinSpieler);
 						oos.writeObject(meinSpieler);

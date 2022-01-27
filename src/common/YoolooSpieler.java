@@ -19,6 +19,7 @@ public class YoolooSpieler implements Serializable {
 	private int punkte;
 	private YoolooKarte[] aktuelleSortierung;
 	private boolean zuschauer;
+	private boolean bot = false;
 	private boolean cheaterFlag = false;
 	public YoolooSpieler(String name, int maxKartenWert, boolean zuschauer) {
 		this.name = name;
@@ -28,26 +29,39 @@ public class YoolooSpieler implements Serializable {
 		this.zuschauer = zuschauer;
 		
 	}
-
+	public YoolooSpieler(String name, int maxKartenWert, boolean zuschauer, boolean bot) {
+		this.name = name;
+		this.punkte = 0;
+		this.spielfarbe = null;
+		this.aktuelleSortierung = new YoolooKarte[maxKartenWert];
+		this.zuschauer = zuschauer;
+		this.bot = bot;
+	}
 	// Sortierung wird zufuellig ermittelt
 	public void sortierungFestlegen() {
-		YoolooKarte[] neueSortierung = new YoolooKarte[this.aktuelleSortierung.length];
-		for (int i = 0; i < neueSortierung.length; i++) {
-            int[] neuerIndex = YoolooLoginData.getCardOrder(name);
-            System.out.println(neuerIndex[0] + " aaaaaaaaaaaaaaaaaaaaaaaaa");
-/*			
-            int neuerIndex = (int) (Math.random() * neueSortierung.length);
-            while (neueSortierung[neuerIndex] != null) {
-                neuerIndex = (int) (Math.random() * neueSortierung.length);
-            }
-            //*/
-			neueSortierung[i] = aktuelleSortierung[neuerIndex[i]];
-			if (zuschauer == true) {
-				neueSortierung[neuerIndex[i]].setWert(0);
-			}
-			// System.out.println(i+ ". neuerIndex: "+neuerIndex);
+		if (bot) {
+			aktuelleSortierung = YoolooStrategie.sortierungFestlegen(aktuelleSortierung);
 		}
-		aktuelleSortierung = neueSortierung;
+		else {
+			YoolooKarte[] neueSortierung = new YoolooKarte[this.aktuelleSortierung.length];
+			for (int i = 0; i < neueSortierung.length; i++) {
+	            int[] neuerIndex = YoolooLoginData.getCardOrder(name);
+	            System.out.println(neuerIndex[0] + " aaaaaaaaaaaaaaaaaaaaaaaaa");
+	/*			
+	            int neuerIndex = (int) (Math.random() * neueSortierung.length);
+	            while (neueSortierung[neuerIndex] != null) {
+	                neuerIndex = (int) (Math.random() * neueSortierung.length);
+	            }
+	            //*/
+				neueSortierung[i] = aktuelleSortierung[neuerIndex[i]];
+				if (zuschauer == true) {
+					neueSortierung[neuerIndex[i]].setWert(0);
+				}
+				// System.out.println(i+ ". neuerIndex: "+neuerIndex);
+			}
+			aktuelleSortierung = neueSortierung;
+		}
+		
 	}
 
 	public int erhaeltPunkte(int neuePunkte) {

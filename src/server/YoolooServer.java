@@ -23,6 +23,8 @@ public class YoolooServer {
 	private int spielerProRunde = 8;
 	private int zuschauer = 0;
 	private int spieler = 0;
+	private int bots = 0;
+	private boolean bot = false;
 	private boolean letzterClientStatus = false;// min 1, max Anzahl definierte Farben in Enum YoolooKartenSpiel.KartenFarbe)
 	private GameMode serverGameMode = GameMode.GAMEMODE_SINGLE_GAME;
 
@@ -100,14 +102,24 @@ public class YoolooServer {
 			            	System.out.println("[YoolooServer] Anzahl verbundene Spieler: " + this.spieler);
 			            	break;
 			            }
+			            if (outputLine.equals("Bot")) {
+			            	this.bots = this.bots + 1;
+			            	this.bot = true;
+			            	System.out.println("[YoolooServer] Anzahl verbundene Spieler: " + this.bots);
+			            	break;
+			            }
 			                
 			        }
-			        if (this.letzterClientStatus == true) {
-			        	YoolooClientHandler clientHandler = new YoolooClientHandler(this, client, true);
+			        if (this.bot == true) {
+			        	YoolooClientHandler clientHandler = new YoolooClientHandler(this, client, true, true);
+			        	clientHandlerList.add(clientHandler);
+			        }
+			        else if (this.letzterClientStatus == true) {
+			        	YoolooClientHandler clientHandler = new YoolooClientHandler(this, client, true, false);
 			        	clientHandlerList.add(clientHandler);
 			        }
 			        else  {
-			        	YoolooClientHandler clientHandler = new YoolooClientHandler(this, client, false);
+			        	YoolooClientHandler clientHandler = new YoolooClientHandler(this, client, false, false);
 			        	clientHandlerList.add(clientHandler);
 			        }
 					
@@ -117,7 +129,7 @@ public class YoolooServer {
 				}
 
 				// Neue Session starten wenn ausreichend Spieler verbunden sind!
-				if (this.spieler >= Math.min(spielerProRunde,
+				if (this.spieler + this.bots >= Math.min(spielerProRunde,
 						YoolooKartenspiel.Kartenfarbe.values().length)) {
 					// Init Session
 					YoolooSession yoolooSession = new YoolooSession(clientHandlerList.size(), serverGameMode);

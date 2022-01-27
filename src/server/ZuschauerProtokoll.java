@@ -13,16 +13,20 @@ public class ZuschauerProtokoll {
         String theOutput = null;
  
         if (state == WAITING) {
-            theOutput = "Zuschauer?";
+            theOutput = "Zuschauer, Spieler oder Bot?";
             state = SENTQUESTION;
         } else if (state == SENTQUESTION) {
-            if (theInput.equalsIgnoreCase("Ja")) {
+            if (theInput.equalsIgnoreCase("Zuschaue")) {
                 theOutput = "Zuschauer";
                 state = WAITING;
-            } else if (theInput.equalsIgnoreCase("Nein")){
+            } else if (theInput.equalsIgnoreCase("Spieler")){
                 theOutput = "Spieler";
                 state = WAITING;
             }
+	        else if (theInput.equalsIgnoreCase("Bot")){
+	            theOutput = "Bot";
+	            state = WAITING;
+	        }
             else {
                 theOutput = "Du sollst Ja oder Nein sagen!" +
                 "Zuschauer?";
