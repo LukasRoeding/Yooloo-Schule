@@ -91,15 +91,13 @@ public class YoolooServer {
 			            if (outputLine.equals("Zuschauer")) {
 			            	this.zuschauer = this.zuschauer + 1;
 			            	this.letzterClientStatus = true;
-			            	System.out.println("Soooo viele Zuschauer");
-			            	System.out.println(this.zuschauer);
+			            	System.out.println("[YoolooServer] Anzahl verbundene Zuschauer: " + this.zuschauer);
 			            	break;
 			            }
 			            if (outputLine.equals("Spieler")) {
 			            	this.spieler = this.spieler + 1;
 			            	this.letzterClientStatus = false;
-			            	System.out.println("Soooo viele Spieler");
-			            	System.out.println(this.spieler);
+			            	System.out.println("[YoolooServer] Anzahl verbundene Spieler: " + this.spieler);
 			            	break;
 			            }
 			                
@@ -113,7 +111,6 @@ public class YoolooServer {
 			        	clientHandlerList.add(clientHandler);
 			        }
 					
-					System.out.println("[YoolooServer] Anzahl verbundene Spieler: " + clientHandlerList.size());
 				} catch (IOException e) {
 					System.out.println("Client Verbindung gescheitert");
 					e.printStackTrace();

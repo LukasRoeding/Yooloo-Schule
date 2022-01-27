@@ -15,6 +15,8 @@ public class YoolooStich implements Serializable {
 	private int stichNummer; // Punktewert des Stichs
 	private int spielerNummer; // SpielerNummer des Stichs
 	private YoolooKarte[] karten;
+	private String kartenString;
+	
 
 	public YoolooStich() {
 		super();
@@ -25,6 +27,12 @@ public class YoolooStich implements Serializable {
 		this.stichNummer = -1;
 		this.spielerNummer = -1;
 		this.karten = stich;
+		String[] array = Arrays.toString(stich).split("],");
+		for (int i = 0; i < array.length; i++) {
+		if (!array[i].contains("wert=0")) {
+			kartenString = kartenString + (array[i] + "]");
+		}
+	}
 	}
 
 	public int getStichNummer() {
@@ -53,15 +61,8 @@ public class YoolooStich implements Serializable {
 
 	@Override
 	public String toString() {
-		String string = Arrays.toString(karten);
-		String[] splitstring = string.split("],");
-		for (int i = 0; i < splitstring.length; i++) {
-			if (splitstring[i].contains("wert=0")) {
-				splitstring[i] = "";
-			}
-		}
 		return "YoolooStich [stichNummer=" + stichNummer + ", spielerNummer=" + spielerNummer + ", karten="
-				+ Arrays.toString(splitstring) + "]";
+				+ kartenString + "]";
 	}
 
 }
