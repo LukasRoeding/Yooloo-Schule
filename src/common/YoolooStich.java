@@ -4,8 +4,8 @@
 
 package common;
 
-import java.io.Serializable;
 import java.util.Arrays;
+import java.io.Serializable;
 
 public class YoolooStich implements Serializable {
 	/**
@@ -53,8 +53,15 @@ public class YoolooStich implements Serializable {
 
 	@Override
 	public String toString() {
+		String string = Arrays.toString(karten);
+		String[] splitstring = string.split("],");
+		for (int i = 0; i < splitstring.length; i++) {
+			if (splitstring[i].contains("wert=0")) {
+				splitstring[i] = "";
+			}
+		}
 		return "YoolooStich [stichNummer=" + stichNummer + ", spielerNummer=" + spielerNummer + ", karten="
-				+ Arrays.toString(karten) + "]";
+				+ Arrays.toString(splitstring) + "]";
 	}
 
 }

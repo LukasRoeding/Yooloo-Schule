@@ -17,16 +17,16 @@ public class YoolooSpieler implements Serializable {
 	private int clientHandlerId = -1;
 	private int punkte;
 	private YoolooKarte[] aktuelleSortierung;
-	private boolean cheaterFlag = false;
-
-	public YoolooSpieler(String name, int maxKartenWert) {
+	private boolean zuschauer;
+	public YoolooSpieler(String name, int maxKartenWert, boolean zuschauer) {
 		this.name = name;
 		this.punkte = 0;
 		this.spielfarbe = null;
 		this.aktuelleSortierung = new YoolooKarte[maxKartenWert];
+		this.zuschauer = zuschauer;
 	}
 
-	/* Sortierung wird zufuellig ermittelt
+	// Sortierung wird zufuellig ermittelt
 	public void sortierungFestlegen() {
 		YoolooKarte[] neueSortierung = new YoolooKarte[this.aktuelleSortierung.length];
 		for (int i = 0; i < neueSortierung.length; i++) {
@@ -35,37 +35,14 @@ public class YoolooSpieler implements Serializable {
 				neuerIndex = (int) (Math.random() * neueSortierung.length);
 			}
 			neueSortierung[neuerIndex] = aktuelleSortierung[i];
+			if (zuschauer == true) {
+				neueSortierung[neuerIndex].setWert(0);
+			}
 			// System.out.println(i+ ". neuerIndex: "+neuerIndex);
 		}
 		aktuelleSortierung = neueSortierung;
 	}
-	*/
-	
-	//Spielstrategie wird angewand, niedrigsten 5 random zuerst dann 5 höchsten am ende.
-	public void sortierungFestlegen() {
-		YoolooKarte[] neueSortierung = new YoolooKarte[this.aktuelleSortierung.length];
-		int neuerIndex;
-		for (int i = 0; i < neueSortierung.length; i++) {
-			if(i<5) {
-				neuerIndex = (int) (Math.random() * (neueSortierung.length/2));
-				while (neueSortierung[neuerIndex] != null) {
-					neuerIndex = (int) (Math.random() * (neueSortierung.length/2));
-				}
-			}
-			
-			else {
-				neuerIndex = (int) (Math.random() * (neueSortierung.length/2+neueSortierung.length/2));
-				while (neueSortierung[neuerIndex] != null) {
-					neuerIndex = (int) (Math.random() * (neueSortierung.length/2+neueSortierung.length/2));
-				}
-			}
-			
-			neueSortierung[neuerIndex] = aktuelleSortierung[i];
-			// System.out.println(i+ ". neuerIndex: "+neuerIndex);
-		}
-		aktuelleSortierung = neueSortierung;
-	}
-	
+
 	public int erhaeltPunkte(int neuePunkte) {
 		System.out.print(name + " hat " + punkte + " P - erhaelt " + neuePunkte + " P - neue Summe: ");
 		this.punkte = this.punkte + neuePunkte;
@@ -122,14 +99,6 @@ public class YoolooSpieler implements Serializable {
 	public void stichAuswerten(YoolooStich stich) {
 		System.out.println(stich.toString());
 
-	}
-
-	public boolean isCheater() {
-		return cheaterFlag;
-	}
-
-	public void setCheaterFlag(boolean cheaterFlag) {
-		this.cheaterFlag = cheaterFlag;
 	}
 
 }
