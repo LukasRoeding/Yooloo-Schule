@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class YoolooKartenspiel {
 	
 	public enum Kartenfarbe {
-		Gelb, Rot, Gruen, Blau, Orange, Pink, Violett, Tuerkis, Zuschauer
+		Gelb, Rot, Gruen, Blau, Orange, Pink, Violett, Tuerkis
 	}
 
 	private String Spielname = "Yooloo";
@@ -63,6 +63,16 @@ public class YoolooKartenspiel {
 	 * @param name
 	 * @return
 	 */
+	public YoolooSpieler spielerRegistrieren(String name) {
+		YoolooSpieler neuerSpieler = new YoolooSpieler(name, maxKartenWert);
+		Kartenfarbe[] farben = Kartenfarbe.values();
+		neuerSpieler.setSpielfarbe(farben[spielerliste.size()]);
+		YoolooKarte[] spielerkarten = spielkarten[spielerliste.size()];
+		neuerSpieler.setAktuelleSortierung(spielerkarten);
+		this.spielerliste.add(neuerSpieler);
+		System.out.println("Debug; Spieler " + name + " registriert als : " + neuerSpieler);
+		return neuerSpieler;
+	}
 
 	/**
 	 * Luesst ein YoolooSpieler aus ClientServer Variante an dem Spiel teilnehmen Der
@@ -168,6 +178,9 @@ public class YoolooKartenspiel {
 					anzahlKartenMitMaxwert++;
 					gewinnerIndex = i;
 				}
+			}
+			if(maxwert<1) {
+				anzahlKartenMitMaxwert+=2;
 			}
 			if (anzahlKartenMitMaxwert != 1) {
 				maxwert--;

@@ -4,12 +4,9 @@
 
 package client;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -36,8 +33,9 @@ public class YoolooClient {
 	private LoginMessage newLogin = null;
 	private YoolooSpieler meinSpieler;
 	private YoolooStich[] spielVerlauf = null;
-	private boolean zuschauer = false;
-	
+	private Boolean cheater;
+	int joker = 0;
+
 	public YoolooClient() {
 		super();
 	}
@@ -47,12 +45,7 @@ public class YoolooClient {
 		this.serverPort = serverPort;
 		clientState = ClientState.CLIENTSTATE_NULL;
 	}
-	public YoolooClient(String serverHostname, int serverPort, boolean zuschauer) {
-		super();
-		this.serverPort = serverPort;
-		clientState = ClientState.CLIENTSTATE_NULL;
-		this.zuschauer = zuschauer;
-	}
+
 	/**
 	 * Client arbeitet statusorientiert als Kommandoempfuenger in einer Schleife.
 	 * Diese terminiert wenn das Spiel oder die Verbindung beendet wird.
@@ -60,6 +53,7 @@ public class YoolooClient {
 	public void startClient() {
 
 		try {
+
 			clientState = ClientState.CLIENTSTATE_CONNECT;
 			verbindeZumServer();
 
@@ -146,49 +140,36 @@ public class YoolooClient {
 		}
 		System.out.println("[Client] Serversocket eingerichtet: " + serverSocket.toString());
 		// Kommunikationskanuele einrichten
-        BufferedReader stdIn =
-                new BufferedReader(new InputStreamReader(System.in));
-	    PrintWriter out = new PrintWriter(serverSocket.getOutputStream(), true);
-	    BufferedReader in = new BufferedReader(
-	        new InputStreamReader(serverSocket.getInputStream()));
-	    String inputLine, outputLine;
-	    while ((inputLine = in.readLine()) != null) {
-	        System.out.println("Server: " + inputLine);
-	        if (inputLine.equals("Spieler"))
-	            break;
-	        if (inputLine.equals("Zuschauer")) {
-	        	this.zuschauer = true;
-	            break;
-	        }
-	        outputLine = stdIn.readLine();
-	        if (outputLine != null) {
-	            System.out.println("Client: " + outputLine);
-	            out.println(outputLine);
-	        }
-	    }
 		ois = new ObjectInputStream(serverSocket.getInputStream());
 		oos = new ObjectOutputStream(serverSocket.getOutputStream());
 	}
 
 	private void spieleStich(int stichNummer) throws IOException {
-		if (!zuschauer) {
-			System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
-					+ "] : Spiele Karte " + stichNummer);
-		}
+		System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
+				+ "] : Spiele Karte " + stichNummer);
+		
+		
 		spieleKarteAus(stichNummer);
+		
+		
 		YoolooStich iStich = empfangeStich();
 		spielVerlauf[stichNummer] = iStich;
 		System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
 				+ "] : Empfange Stich " + iStich);
-		System.out.print(
-				"[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState + "] : Gewonnen - ");
-		meinSpieler.erhaeltPunkte(iStich.getStichNummer() + 1);
-
+		if (iStich.getSpielerNummer() == meinSpieler.getClientHandlerId()) {
+			System.out.print(
+					"[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState + "] : Gewonnen - ");
+			meinSpieler.erhaeltPunkte(iStich.getStichNummer() + 1);
+		}
 
 	}
 
 	private void spieleKarteAus(int i) throws IOException {
-		oos.writeObject(meinSpieler.getAktuelleSortierung()[i]);
+		if(!cheater) {
+			oos.writeObject(meinSpieler.getAktuelleSortierung()[i]);
+		}else {	
+			oos.writeObject(meinSpieler.getAktuelleSortierung()[5]);
+		}
 	}
 
 	// Methoden fuer Datenempfang vom Server / ClientHandler
@@ -242,18 +223,34 @@ public class YoolooClient {
 
 	public void ausgabeKartenSet() {
 		// Ausgabe Kartenset
-		if (!this.zuschauer) {
+		System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
+				+ "] : Uebermittelte Kartensortierung beim Login ");
+		for (int i = 0; i < meinSpieler.getAktuelleSortierung().length; i++) {
 			System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
-			+ "] : Uebermittelte Kartensortierung beim Login ");
-			for (int i = 0; i < meinSpieler.getAktuelleSortierung().length; i++) {
-				System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
-						+ "] : Karte " + (i + 1) + ":" + meinSpieler.getAktuelleSortierung()[i]);
-			}
+					+ "] : Karte " + (i + 1) + ":" + meinSpieler.getAktuelleSortierung()[i]);
 		}
-
-
+		
 	}
-
+	
+//	public void ausgabeKartenSet(Boolean cheater) {
+//	// Ausgabe Kartenset
+//	if(!cheater) {
+//		System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
+//			+ "] : Uebermittelte Kartensortierung beim Login ");
+//		for (int i = 0; i < meinSpieler.getAktuelleSortierung().length; i++) {
+//			System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
+//				+ "] : Karte " + (i + 1) + ":" + meinSpieler.getAktuelleSortierung()[i]);
+//		}
+//	}else {
+//		System.out.println("I'm Cheating");
+//		System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
+//				+ "] : Uebermittelte Kartensortierung beim Login ");
+//			for (int i = 0; i < meinSpieler.getAktuelleSortierung().length; i++) {
+//				System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
+//					+ "] : Karte " + (i + 1) + ":" + meinSpieler.getAktuelleSortierung()[5]);
+//			}
+//	}
+//}
 	public enum ClientState {
 		CLIENTSTATE_NULL, // Status nicht definiert
 		CLIENTSTATE_CONNECT, // Verbindung zum Server wird aufgebaut

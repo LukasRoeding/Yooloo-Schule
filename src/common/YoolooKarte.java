@@ -19,7 +19,6 @@ public class YoolooKarte implements Serializable {
 		this.farbe = kartenfarbe;
 		this.wert = kartenwert;
 	}
-
 	public common.YoolooKartenspiel.Kartenfarbe getFarbe() {
 		return farbe;
 	}
@@ -27,9 +26,7 @@ public class YoolooKarte implements Serializable {
 	public int getWert() {
 		return wert;
 	}
-	public void setWert(int wert) {
-		this.wert = wert;
-	}
+
 	@Override
 	public String toString() {
 		return "YoolooKarte [farbe=" + farbe + ", wert=" + wert + "]";
