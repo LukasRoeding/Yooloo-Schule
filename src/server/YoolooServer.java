@@ -4,7 +4,10 @@
 
 package server;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -17,11 +20,18 @@ public class YoolooServer {
 
 	// Server Standardwerte koennen ueber zweite Konstruktor modifiziert werden!
 	private int port = 44137;
-	private int spielerProRunde = 8; // min 1, max Anzahl definierte Farben in Enum YoolooKartenSpiel.KartenFarbe)
+	private int spielerProRunde = 8;
+	private int zuschauer = 0;
+	private int spieler = 0;
+	private boolean letzterClientStatus = false;// min 1, max Anzahl definierte Farben in Enum YoolooKartenSpiel.KartenFarbe)
 	private GameMode serverGameMode = GameMode.GAMEMODE_SINGLE_GAME;
 
 	public GameMode getServerGameMode() {
 		return serverGameMode;
+	}
+
+	public void setServerGameMode(GameMode serverGameMode) {
+		this.serverGameMode = serverGameMode;
 	}
 
 	private ServerSocket serverSocket = null;
@@ -49,7 +59,7 @@ public class YoolooServer {
 
 	public YoolooServer(int port, int spielerProRunde, GameMode gameMode) {
 		this.port = port;
-		this.setSpielerProRunde(spielerProRunde);
+		this.spielerProRunde = spielerProRunde;
 		this.serverGameMode = gameMode;
 	}
 
@@ -66,9 +76,43 @@ public class YoolooServer {
 
 				// Neue Spieler registrieren
 				try {
-					client = serverSocket.accept();
-					YoolooClientHandler clientHandler = new YoolooClientHandler(this, client);
-					clientHandlerList.add(clientHandler);
+					client = serverSocket.accept();				    
+					PrintWriter out =
+				            new PrintWriter(client.getOutputStream(), true);
+				        BufferedReader in = new BufferedReader(
+				            new InputStreamReader(client.getInputStream()));
+				    String inputLine, outputLine;
+				    KnockKnockProtocol kkp = new KnockKnockProtocol();
+				    outputLine = kkp.processInput(null);
+				    out.println(outputLine);
+			        while ((inputLine = in.readLine()) != null) {
+			            outputLine = kkp.processInput(inputLine);
+			            out.println(outputLine);
+			            if (outputLine.equals("Zuschauer")) {
+			            	this.zuschauer = this.zuschauer + 1;
+			            	this.letzterClientStatus = true;
+			            	System.out.println("Soooo viele Zuschauer");
+			            	System.out.println(this.zuschauer);
+			            	break;
+			            }
+			            if (outputLine.equals("Spieler")) {
+			            	this.spieler = this.spieler + 1;
+			            	this.letzterClientStatus = false;
+			            	System.out.println("Soooo viele Spieler");
+			            	System.out.println(this.spieler);
+			            	break;
+			            }
+			                
+			        }
+			        if (this.letzterClientStatus == true) {
+			        	YoolooClientHandler clientHandler = new YoolooClientHandler(this, client, true);
+			        	clientHandlerList.add(clientHandler);
+			        }
+			        else  {
+			        	YoolooClientHandler clientHandler = new YoolooClientHandler(this, client, false);
+			        	clientHandlerList.add(clientHandler);
+			        }
+					
 					System.out.println("[YoolooServer] Anzahl verbundene Spieler: " + clientHandlerList.size());
 				} catch (IOException e) {
 					System.out.println("Client Verbindung gescheitert");
@@ -76,7 +120,7 @@ public class YoolooServer {
 				}
 
 				// Neue Session starten wenn ausreichend Spieler verbunden sind!
-				if (clientHandlerList.size() >= Math.min(getSpielerProRunde(),
+				if (this.spieler >= Math.min(spielerProRunde,
 						YoolooKartenspiel.Kartenfarbe.values().length)) {
 					// Init Session
 					YoolooSession yoolooSession = new YoolooSession(clientHandlerList.size(), serverGameMode);
@@ -110,13 +154,5 @@ public class YoolooServer {
 		} else {
 			System.out.println("Servercode falsch");
 		}
-	}
-
-	public int getSpielerProRunde() {
-		return spielerProRunde;
-	}
-
-	public void setSpielerProRunde(int spielerProRunde) {
-		this.spielerProRunde = spielerProRunde;
 	}
 }

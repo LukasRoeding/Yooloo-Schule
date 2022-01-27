@@ -27,10 +27,6 @@ import messages.ServerMessage.ServerMessageType;
 public class YoolooClientHandler extends Thread {
 
 	private final static int delay = 100;
-	private final static String BANNED = "BAN";
-	private final static String LOGGEDIN = "LOG";
-	private final static String NORMAL = "NOR";
-	private final static String PREMIUM = "PRE";
 
 	private YoolooServer myServer;
 
@@ -39,15 +35,14 @@ public class YoolooClientHandler extends Thread {
 
 	private ObjectOutputStream oos = null;
 	private ObjectInputStream ois = null;
-
+	private boolean zuschauer = false;
 	private ServerState state;
 	private YoolooSession session;
 	private YoolooSpieler meinSpieler = null;
 	private int clientHandlerId;
 
-	private Object [] cheaterArray = new Object[0];
-
-	public YoolooClientHandler(YoolooServer yoolooServer, Socket clientSocket) {
+	public YoolooClientHandler(YoolooServer yoolooServer, Socket clientSocket, boolean zuschauer) {
+		this.zuschauer = zuschauer;
 		this.myServer = yoolooServer;
 		myServer.toString();
 		this.clientSocket = clientSocket;
@@ -73,7 +68,6 @@ public class YoolooClientHandler extends Thread {
 	 */
 	@Override
 	public void run() {
-		
 		try {
 			state = ServerState.ServerState_CONNECT; // Verbindung zum Client aufbauen
 			verbindeZumClient();
@@ -84,7 +78,7 @@ public class YoolooClientHandler extends Thread {
 			Object antwortObject = null;
 			while (this.state != ServerState.ServerState_DISCONNECTED) {
 				// Empfange Spieler als Antwort vom Client
-				antwortObject = empfangeVomClient();			
+				antwortObject = empfangeVomClient();
 				if (antwortObject instanceof ClientMessage) {
 					ClientMessage message = (ClientMessage) antwortObject;
 					System.out.println("[ClientHandler" + clientHandlerId + "] Nachricht Vom Client: " + message);
@@ -95,7 +89,7 @@ public class YoolooClientHandler extends Thread {
 					if (antwortObject instanceof LoginMessage) {
 						LoginMessage newLogin = (LoginMessage) antwortObject;
 						// TODO GameMode des Logins wird noch nicht ausgewertet
-						meinSpieler = new YoolooSpieler(newLogin.getSpielerName(), YoolooKartenspiel.maxKartenWert);
+						meinSpieler = new YoolooSpieler(newLogin.getSpielerName(), YoolooKartenspiel.maxKartenWert, zuschauer);
 						meinSpieler.setClientHandlerId(clientHandlerId);
 						registriereSpielerInSession(meinSpieler);
 						oos.writeObject(meinSpieler);
@@ -114,12 +108,6 @@ public class YoolooClientHandler extends Thread {
 							// Neue YoolooKarte in Session ausspielen und Stich abfragen
 							YoolooKarte neueKarte = (YoolooKarte) empfangeVomClient();
 							System.out.println("[ClientHandler" + clientHandlerId + "] Karte empfangen:" + neueKarte);
-							
-							cheaterArray = YoolooCheaterDetection.checkForCheaters(cheaterArray,neueKarte,meinSpieler);
-							if(meinSpieler.isCheater()) {
-								neueKarte = new YoolooKarte(neueKarte.getFarbe(),0);
-								//YoolooLoginData.setStatus(meinSpieler.getName(),BANNED);
-							}
 							YoolooStich currentstich = spieleKarte(stichNummer, neueKarte);
 							// Punkte fuer gespielten Stich ermitteln
 							if (currentstich.getSpielerNummer() == clientHandlerId) {
