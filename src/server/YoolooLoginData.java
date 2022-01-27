@@ -132,7 +132,7 @@ public class YoolooLoginData {
             numberOfUsers = 1;
             tempDataCollection = new String[1][3];
             tempDataCollection[0][0] = userInput;
-            tempDataCollection[0][1] = "normal";
+            tempDataCollection[0][1] = "NOR";
             tempDataCollection[0][2] = "0,1,2,3,4,5,6,7,8,9";
         }
 
@@ -159,7 +159,7 @@ public class YoolooLoginData {
                 numberOfUsers = 1;
                 tempDataCollection = new String[1][3];
                 tempDataCollection[0][0] = userInput;
-                tempDataCollection[0][1] = "normal";
+                tempDataCollection[0][1] = "NOR";
                 tempDataCollection[0][2] = "0,1,2,3,4,5,6,7,8,9";
 
                 break;
@@ -180,7 +180,7 @@ public class YoolooLoginData {
         }
         userIndexCurrent++;
         tempDataCollection[userIndexCurrent][0] = userInput;
-        tempDataCollection[userIndexCurrent][1] = "normal";
+        tempDataCollection[userIndexCurrent][1] = "NOR";
         tempDataCollection[userIndexCurrent][2] = "0,1,2,3,4,5,6,7,8,9";
         numberOfUsers = userIndexCurrent+1;
     }
