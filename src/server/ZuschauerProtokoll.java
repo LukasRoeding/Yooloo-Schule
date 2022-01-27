@@ -16,7 +16,7 @@ public class ZuschauerProtokoll {
             theOutput = "Zuschauer, Spieler oder Bot?";
             state = SENTQUESTION;
         } else if (state == SENTQUESTION) {
-            if (theInput.equalsIgnoreCase("Zuschaue")) {
+            if (theInput.equalsIgnoreCase("Zuschauer")) {
                 theOutput = "Zuschauer";
                 state = WAITING;
             } else if (theInput.equalsIgnoreCase("Spieler")){
@@ -28,8 +28,8 @@ public class ZuschauerProtokoll {
 	            state = WAITING;
 	        }
             else {
-                theOutput = "Du sollst Ja oder Nein sagen!" +
-                "Zuschauer?";
+                theOutput = "Zuschauer, Spieler oder Bot sagen!" +
+                "Zuschauer, Spieler oder Bot?";
             }
         }
         return theOutput;

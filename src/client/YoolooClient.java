@@ -185,12 +185,13 @@ public class YoolooClient {
 		spieleKarteAus(stichNummer);
 		YoolooStich iStich = empfangeStich();
 		spielVerlauf[stichNummer] = iStich;
+		
 		System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
 				+ "] : Empfange Stich " + iStich);
-		if (iStich.getSpielerNummer() == meinSpieler.getClientHandlerId() || this.zuschauer) {
+		if (iStich.getSpielerNummer() == meinSpieler.getClientHandlerId()) {
 					System.out.print(
 				"[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState + "] : Gewonnen - ");
-		meinSpieler.erhaeltPunkte(iStich.getStichNummer() + 1);
+					meinSpieler.erhaeltPunkte(iStich.getStichNummer() + 1);
 		}
 
 

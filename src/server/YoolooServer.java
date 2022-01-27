@@ -105,7 +105,7 @@ public class YoolooServer {
 			            if (outputLine.equals("Bot")) {
 			            	this.bots = this.bots + 1;
 			            	this.bot = true;
-			            	System.out.println("[YoolooServer] Anzahl verbundene Spieler: " + this.bots);
+			            	System.out.println("[YoolooServer] Anzahl verbundene Bots: " + this.bots);
 			            	break;
 			            }
 			                
