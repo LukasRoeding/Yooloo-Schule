@@ -148,6 +148,9 @@ public class YoolooClient {
 		}
 		System.out.println("[Client] Serversocket eingerichtet: " + serverSocket.toString());
 		// Kommunikationskanuele einrichten
+		/**
+		 * Kommunikationskanal um Cliententypen anzugeben
+		 */
         BufferedReader stdIn =
                 new BufferedReader(new InputStreamReader(System.in));
 	    PrintWriter out = new PrintWriter(serverSocket.getOutputStream(), true);

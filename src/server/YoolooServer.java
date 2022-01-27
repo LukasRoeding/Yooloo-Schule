@@ -78,7 +78,10 @@ public class YoolooServer {
 
 				// Neue Spieler registrieren
 				try {
-					client = serverSocket.accept();				    
+					client = serverSocket.accept();
+					/**
+					 * Kommunikation mit dem Client um herauszufinden, ob er Spieler/Zuschauer/Bot ist.
+					 */
 					PrintWriter out =
 				            new PrintWriter(client.getOutputStream(), true);
 				        BufferedReader in = new BufferedReader(
@@ -110,6 +113,9 @@ public class YoolooServer {
 			            }
 			                
 			        }
+			        /**
+			         * erstelle unterschiedliche Clienthandler anhand des Clienttypen
+			         */
 			        if (this.bot == true) {
 			        	YoolooClientHandler clientHandler = new YoolooClientHandler(this, client, true, true);
 			        	clientHandlerList.add(clientHandler);

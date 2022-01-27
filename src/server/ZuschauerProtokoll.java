@@ -2,13 +2,21 @@ package server;
 
 import java.net.*;
 import java.io.*;
- 
+/**
+ * Kurzes Kommunikationsprotokoll um herauszufinden ob der Klient ein Zuschauer/Spieler oder Bot sein möchte.
+ * @author roedinl
+ *
+ */
 public class ZuschauerProtokoll {
     private static final int WAITING = 0;
     private static final int SENTQUESTION = 1;
  
     private int state = WAITING;
- 
+    /**
+     * 
+     * @param theInput Clientinput
+     * @return Gibt Zuschauer/Spieler/Bot zurück, wenn CLient als solcher registriert wurde.
+     */
     public String processInput(String theInput) {
         String theOutput = null;
  
