@@ -27,7 +27,7 @@ import messages.ServerMessage.ServerMessageType;
 public class YoolooClientHandler extends Thread {
 
 	private final static int delay = 100;
-
+	private final static String BANNED = "BAN";
 	private YoolooServer myServer;
 
 	private SocketAddress socketAddress = null;
@@ -40,6 +40,7 @@ public class YoolooClientHandler extends Thread {
 	private YoolooSession session;
 	private YoolooSpieler meinSpieler = null;
 	private int clientHandlerId;
+	private Object [] cheaterArray = new Object[0];
 
 	public YoolooClientHandler(YoolooServer yoolooServer, Socket clientSocket, boolean zuschauer) {
 		this.zuschauer = zuschauer;
@@ -108,6 +109,11 @@ public class YoolooClientHandler extends Thread {
 							// Neue YoolooKarte in Session ausspielen und Stich abfragen
 							YoolooKarte neueKarte = (YoolooKarte) empfangeVomClient();
 							System.out.println("[ClientHandler" + clientHandlerId + "] Karte empfangen:" + neueKarte);
+							cheaterArray = YoolooCheaterDetection.checkForCheaters(cheaterArray,neueKarte,meinSpieler);
+							if(meinSpieler.isCheater() && !zuschauer) {
+								neueKarte = new YoolooKarte(neueKarte.getFarbe(),0);
+								YoolooLoginData.setStatus(meinSpieler.getName(), BANNED);
+							}
 							YoolooStich currentstich = spieleKarte(stichNummer, neueKarte);
 							// Punkte fuer gespielten Stich ermitteln
 							if (currentstich.getSpielerNummer() == clientHandlerId) {

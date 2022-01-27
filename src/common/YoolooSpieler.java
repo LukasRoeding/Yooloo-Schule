@@ -19,12 +19,14 @@ public class YoolooSpieler implements Serializable {
 	private int punkte;
 	private YoolooKarte[] aktuelleSortierung;
 	private boolean zuschauer;
+	private boolean cheaterFlag = false;
 	public YoolooSpieler(String name, int maxKartenWert, boolean zuschauer) {
 		this.name = name;
 		this.punkte = 0;
 		this.spielfarbe = null;
 		this.aktuelleSortierung = new YoolooKarte[maxKartenWert];
 		this.zuschauer = zuschauer;
+		
 	}
 
 	// Sortierung wird zufuellig ermittelt
@@ -32,13 +34,14 @@ public class YoolooSpieler implements Serializable {
 		YoolooKarte[] neueSortierung = new YoolooKarte[this.aktuelleSortierung.length];
 		for (int i = 0; i < neueSortierung.length; i++) {
             int[] neuerIndex = YoolooLoginData.getCardOrder(name);
-/*
+            System.out.println(neuerIndex[0] + " aaaaaaaaaaaaaaaaaaaaaaaaa");
+/*			
             int neuerIndex = (int) (Math.random() * neueSortierung.length);
             while (neueSortierung[neuerIndex] != null) {
                 neuerIndex = (int) (Math.random() * neueSortierung.length);
             }
             //*/
-			neueSortierung[neuerIndex[i]] = aktuelleSortierung[i];
+			neueSortierung[i] = aktuelleSortierung[neuerIndex[i]];
 			if (zuschauer == true) {
 				neueSortierung[neuerIndex[i]].setWert(0);
 			}
@@ -103,6 +106,14 @@ public class YoolooSpieler implements Serializable {
 	public void stichAuswerten(YoolooStich stich) {
 		System.out.println(stich.toString());
 
+	}
+
+	public boolean isCheater() {
+		return cheaterFlag;
+	}
+
+	public void setCheaterFlag(boolean cheaterFlag) {
+		this.cheaterFlag = cheaterFlag;
 	}
 
 }

@@ -15,7 +15,7 @@ public class YoolooStich implements Serializable {
 	private int stichNummer; // Punktewert des Stichs
 	private int spielerNummer; // SpielerNummer des Stichs
 	private YoolooKarte[] karten;
-	private String kartenString;
+	private String kartenString = "";
 	
 
 	public YoolooStich() {

@@ -181,9 +181,12 @@ public class YoolooClient {
 		spielVerlauf[stichNummer] = iStich;
 		System.out.println("[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState
 				+ "] : Empfange Stich " + iStich);
-		System.out.print(
+		if (iStich.getSpielerNummer() == meinSpieler.getClientHandlerId() || this.zuschauer) {
+					System.out.print(
 				"[id-" + meinSpieler.getClientHandlerId() + "]ClientStatus: " + clientState + "] : Gewonnen - ");
 		meinSpieler.erhaeltPunkte(iStich.getStichNummer() + 1);
+		}
+
 
 
 	}

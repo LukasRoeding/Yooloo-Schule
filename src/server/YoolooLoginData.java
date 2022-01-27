@@ -334,9 +334,8 @@ public class YoolooLoginData {
     }
 
     public static void setStatus(String user, String status) {
-        //initializeCollection();
+        initializeCollection();
         String string;
-
         String[] statusArray;
         for(int userIndex=0;userIndex<localLoginDataCollection.length;userIndex++){
             if(localLoginDataCollection[userIndex][0].matches(user)){
